@@ -1,0 +1,24 @@
+name: Docker CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: docker build -t github-actions-docker-cicd .
+
+      - name: Run Container Test
+        run: |
+          docker run -d -p 8080:80 --name test-container github-actions-docker-cicd
+          docker ps
+          docker stop test-container
+          docker rm test-container
